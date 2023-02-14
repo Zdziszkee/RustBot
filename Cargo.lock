@@ -7,6 +7,7 @@ name = "RustBot"
 version = "0.1.0"
 dependencies = [
  "chrono",
+ "dashmap",
  "reqwest",
  "serde",
  "serde_json",

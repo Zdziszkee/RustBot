@@ -1,16 +1,16 @@
-use std::collections::HashMap;
 use std::env;
 use std::fs::{File};
 use std::io::{Write};
 use std::time::Instant;
-use serde::{Serialize, Deserialize};
-use serde_json::{json, Value};
+use serde_json::{Value};
 use tokio::fs;
 use std::time::SystemTime;
+use dashmap::DashMap;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut cache: HashMap<String, i32> = HashMap::new();
+    //map holding most recentTransaction for each wallet
+    let cache: DashMap<String, String> = DashMap::new();
 
     let start = Instant::now();
 
@@ -31,8 +31,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let contents: String = fs::read_to_string(config_path).await?;
     let wallets: Vec<String> = serde_json::from_str(&contents)?;
     for wallet in wallets {
-        cache.insert(wallet, 0);
+       // cache.insert(wallet, String::from(""));
     }
+
 
     let response: Value = reqwest::get("https://api.etherscan.io/api?module=account&action=txlist&address=0xa7b5ca022774bd02842932e4358ddcbea0ccaade&startblock=0&endblock=99999999&page=1&offset=10&sort=desc&apikey=NYA5ZPRQDECFZBINXU3GE6BTQQVWZN3FHG")
         .await?
